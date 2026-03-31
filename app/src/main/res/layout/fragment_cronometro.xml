@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2b2b28"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Tiempo -->
+        <TextView
+            android:id="@+id/txtTiempo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="#ffffff"
+            android:textSize="32sp"/>
+
+        <!-- Kcal -->
+        <TextView
+            android:id="@+id/txtKcal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 kcal"
+            android:textColor="#aaaaaa"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp"/>
+
+        <!-- Botones Play/Pausa y Reinicio -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/botonPlayPausa"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:background="@drawable/boton_rendondo"
+                android:text="▶"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/botonReiniciar"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/boton_rendondo"
+                android:text="↺"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

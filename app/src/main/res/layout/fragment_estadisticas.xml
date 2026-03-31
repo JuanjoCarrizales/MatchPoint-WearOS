@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2b2b28">
+
+        <!--Título-->
+        <TextView
+            android:id="@+id/txtTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Estadísticas"
+            android:textColor="#FFD700"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.134" />
+
+        <!--Total partidos-->
+        <TextView
+            android:id="@+id/txtTotalPartidos"
+            android:layout_width="226dp"
+            android:layout_height="18dp"
+            android:gravity="center"
+            android:text="Partidos Jugados: 0"
+            android:textColor="#ffffff"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.291" />
+
+        <!--Puntos ganados-->
+        <TextView
+            android:id="@+id/txtPuntosGanados"
+            android:layout_width="227dp"
+            android:layout_height="15dp"
+            android:gravity="center"
+            android:text="Puntos ganados: 0"
+            android:textColor="#aaffaa"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.429" />
+
+        <!--Puntos perdidos-->
+        <TextView
+            android:id="@+id/txtPuntosPerdidos"
+            android:layout_width="227dp"
+            android:layout_height="14dp"
+            android:gravity="center"
+            android:text="Puntos perdidos: 0"
+            android:textColor="#ffaaaa"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.497" />
+
+        <!--Ventajas pareja 1-->
+        <TextView
+            android:id="@+id/txtVentajasP1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Ventajas P1: 0"
+            android:textColor="#aaaaff"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.641"
+            tools:layout_editor_absoluteX="1dp" />
+
+        <!--Ventajas pareja 2-->
+        <TextView
+            android:id="@+id/txtVentajasP2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Ventajas P2: 0"
+            android:textColor="#aaaaff"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.712"
+            tools:layout_editor_absoluteX="1dp" />
+
+        <!--Duración media-->
+        <TextView
+            android:id="@+id/txtDuracionMedia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Duración media: 0 min"
+            android:textColor="#aaaaaa"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.825"
+            tools:layout_editor_absoluteX="1dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
