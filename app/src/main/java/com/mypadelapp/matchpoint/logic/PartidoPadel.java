@@ -58,6 +58,7 @@ public final class PartidoPadel {
     
     //Base de datos:
     private final DatabaseManager db;
+    private final LocationManager locationManager;
     private int idPartidoActual = -1;
     private int tiempoInicioPartido;
     private int duracionSegundos = 0;
@@ -65,6 +66,7 @@ public final class PartidoPadel {
     //Constructor: Se inicia en 0:
     public PartidoPadel(Context context) {
         db = new DatabaseManager(context);
+        locationManager = new LocationManager(context);
         reiniciar();
     }
     
@@ -97,14 +99,17 @@ public final class PartidoPadel {
     //Iniciar el partido con el cronometro:
     public void iniciarPartido() {
         if (!partidoIniciado) {
-            try {
-                idPartidoActual = db.iniciarPartido("Pareja 1", "Pareja 2");
-                tiempoInicioPartido = (int)(System.currentTimeMillis() / 1000);
-                partidoIniciado = true;
-                System.out.println("Partido iniciado - ID: " + idPartidoActual);
-            } catch (Exception e){
-                System.err.println("Error al iniciar el partido: " + e.getMessage());
-            }  
+            //Obtenemos la ubicación antes de empezar el partido:
+            locationManager.ultimaUbicacion(() -> {
+                try {
+                    idPartidoActual = db.iniciarPartido("Pareja 1", "Pareja 2");
+                    tiempoInicioPartido = (int) (System.currentTimeMillis() / 1000);
+                    partidoIniciado = true;
+                    System.out.println("Partido iniciado - ID: " + idPartidoActual);
+                } catch (Exception e) {
+                    System.err.println("Error al iniciar el partido: " + e.getMessage());
+                }
+            });
         }
     }
 
@@ -404,7 +409,6 @@ public final class PartidoPadel {
             return;
         }
         try {
-            int duracion = (int) (System.currentTimeMillis() / 1000) - tiempoInicioPartido;
             int ganador = setsPareja1 >= 2 ? 1 : 2;
             db.finalizarPartido(idPartidoActual, 
                 duracionSegundos,
@@ -413,8 +417,14 @@ public final class PartidoPadel {
                 ganador
             );
 
+            //Obtención de puntos ganados/perdidos del último partido:
+            int puntosGanados = db.getPuntosGanados();
+            int puntosPerdidos = db.getPuntosPerdidos();
+
             //Subimos a Firestore:
-            FirebaseManager.subirPartido(duracionSegundos, setsPareja1, setsPareja2, ganador);
+            FirebaseManager.subirPartido(duracionSegundos, setsPareja1, setsPareja2, ganador,
+                    puntosGanados, puntosPerdidos, locationManager.getLatitud(), locationManager.getLongitud()
+            );
 
         } catch (Exception e) {
             System.err.println("Error al finalizar el partido: " + e.getMessage());

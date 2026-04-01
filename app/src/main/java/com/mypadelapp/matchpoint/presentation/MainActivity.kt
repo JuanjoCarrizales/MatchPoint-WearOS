@@ -13,11 +13,14 @@ import com.mypadelapp.matchpoint.ui.PagerAdapter
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import android.Manifest
+import androidx.core.app.ActivityCompat
 
 class MainActivity : FragmentActivity() {
 
     lateinit var partido: PartidoPadel
     private val handler = Handler(Looper.getMainLooper())
+    private val LOCATION_PERMISSION_REQUEST = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +32,12 @@ class MainActivity : FragmentActivity() {
         viewPager.adapter = PagerAdapter(this, partido)
 
         iniciarReloj()
+
+        //Pedir permiso para la ubicación:
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST)
+        }
 
         //Login automatico a Firebase:
         FirebaseManager.loginAutomatico(
