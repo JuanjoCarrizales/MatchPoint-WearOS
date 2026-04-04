@@ -1,8 +1,9 @@
 package com.mypadelapp.matchpoint.logic;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class FirebaseManager {
 
     //Login automático al iniciar la app y registrar los datos:
     public static void loginAutomatico(Runnable onExito, Runnable onError) {
-        if(auth.getCurrentUser() != null) {
+        if (auth.getCurrentUser() != null) {
             onExito.run();
             return;
         }
@@ -30,40 +31,68 @@ public class FirebaseManager {
     }
 
     //Subimos el partido acabado a Firestore:
-    public static void subirPartido(int duracion, int setsP1, int setsP2, int ganador, int puntosGanados, int puntosPerdidos,
-                                    double latitud, double longitud) {
-        if(auth.getCurrentUser() == null) return;
+    public static void subirPartido(DatabaseManager localDb, int idPartido, int duracion, int ganador,
+                                    double latitud, double longitud, String fechaInicio, String fechaFin) {
 
+        if (auth.getCurrentUser() == null) return;
         String uid = auth.getCurrentUser().getUid();
 
         //Hora y día de la semana:
         java.util.Calendar cal = java.util.Calendar.getInstance();
-        int horaInicio = cal.get(Calendar.HOUR_OF_DAY);
-        int minutosInicio = cal.get(Calendar.MINUTE);
         int diaSemana = cal.get(Calendar.DAY_OF_WEEK);
 
-        //Duración media de los puntos:
-        int totalPuntos = puntosGanados + puntosPerdidos;
-        int duracionMediaPuntos = totalPuntos > 0 ? duracion / totalPuntos : 0;
-
+        //Datos del partido:
         Map<String, Object> partido = new HashMap<>();
-        partido.put("fecha", System.currentTimeMillis());
+        partido.put("fecha_inicio", fechaInicio);
+        partido.put("fecha_fin", fechaFin);
         partido.put("duracion_total", duracion);
-        partido.put("setst_pareja1", setsP1);
-        partido.put("setst_pareja2", setsP2);
         partido.put("ganador", ganador);
-        partido.put("puntos_ganados", puntosGanados);
-        partido.put("puntos_perdidos", puntosPerdidos);
-        partido.put("duracion_media_punto", duracionMediaPuntos);
-        partido.put("hora_inicio", horaInicio);
-        partido.put("minutos_inicio", minutosInicio);
         partido.put("dia_semana", diaSemana);
         partido.put("latitud", latitud);
         partido.put("longitud", longitud);
 
+        //Subimos el partido y sus puntos:
         db.collection("usuarios")
                 .document(uid).collection("partidos").add(partido)
-                .addOnSuccessListener(ref -> System.out.println("Partido subido: " + ref.getId()))
-                .addOnFailureListener(e -> System.out.println("Error al subir el partido: " + e.getMessage()));
+                .addOnSuccessListener(docRef -> {
+                    System.out.println("Partido subido: " + docRef.getId());
+                    //Puntos como subcolección del partido:
+                    subirPuntos(localDb, docRef.getId(), uid, idPartido);
+                }).addOnFailureListener(e -> System.out.println("Error al subir el partido: " + e.getMessage()));
+    }
+
+    //Subimos los puntos del partido:
+    private static void subirPuntos(DatabaseManager localDb, String idPartidoFirestore, String uid, int idPartidoLocal) {
+        //Lectura de los puntos de SQLite:
+        SQLiteDatabase sqlDb = localDb.getReadableDatabase();
+        Cursor cursor = sqlDb.rawQuery(
+                "SELECT timestamp, pareja_ganadora, puntos_pareja1, puntos_pareja2," +
+                    "juegos_pareja1, juegos_pareja2, sets_pareja1, sets_pareja2, tiebreak " +
+                    "FROM puntos WHERE id_partido = ?",
+                new String[]{String.valueOf(idPartidoLocal)}
+        );
+
+        while (cursor.moveToNext()) {
+            Map<String, Object> punto = new HashMap<>();
+            punto.put("timestamp",       cursor.getInt(0));
+            punto.put("pareja_ganadora", cursor.getInt(1));
+            punto.put("puntos_pareja1",  cursor.getInt(2));
+            punto.put("puntos_pareja2",  cursor.getInt(3));
+            punto.put("juegos_pareja1",  cursor.getInt(4));
+            punto.put("juegos_pareja2",  cursor.getInt(5));
+            punto.put("sets_pareja1",    cursor.getInt(6));
+            punto.put("sets_pareja2",    cursor.getInt(7));
+            punto.put("tiebreak",        cursor.getInt(8) == 1);
+
+            db.collection("usuarios")
+                    .document(uid).collection("partidos").document(idPartidoFirestore)
+                    .collection("puntos").add(punto)
+                    .addOnFailureListener(e -> System.err.println("Error al subir punto: " + e.getMessage()));
+            punto.clear();
+        }
+
+        int total = cursor.getCount();
+        cursor.close();
+        System.out.println("Puntos subidos: " + total);
     }
 }

@@ -96,7 +96,7 @@ public final class PartidoPadel {
         duracionSegundos = 0;
     }
     
-    //Iniciar el partido con el cronometro:
+    //Iniciar el partido con el cronómetro:
     public void iniciarPartido() {
         if (!partidoIniciado) {
             //Obtenemos la ubicación antes de empezar el partido:
@@ -122,7 +122,7 @@ public final class PartidoPadel {
         return cronometroActivo;
     }
 
-    //Setter para la duración del cronómoetro:
+    //Setter para la duración del cronómetro:
     public void setDuracionSegundos(int segundos) {
         duracionSegundos = segundos;
     }
@@ -135,16 +135,17 @@ public final class PartidoPadel {
     //Puntuación pareja 1:
     public void addPuntoPareja1() {
         //Estado del partido:
-        guardarEstado();
-        guardarPuntosBD(1);
+
         
         //Si estamos en Tie-Break:
         if (tieBreak) {
             puntosTieBreakPareja1++;
-            //Comprobamos si el lo gana la pareja 1 (7 puntos y con 2 de diferencia):
+            //Comprobamos si el tie lo gana la pareja 1 (7 puntos y con 2 de diferencia):
             if (puntosTieBreakPareja1 >= 7 && puntosTieBreakPareja1 >= puntosTieBreakPareja2 + 2) {
                 ganarSetPareja1TieBreak();
-            } 
+            }
+            guardarEstado();
+            guardarPuntosBD(1);
             return;
         }
         
@@ -164,6 +165,8 @@ public final class PartidoPadel {
                 ganarJuegoPareja1();
             }
         }
+        guardarEstado();
+        guardarPuntosBD(1);
     }
     
     //Puntuación pareja 2:
@@ -175,7 +178,7 @@ public final class PartidoPadel {
         //Si estamos en Tie-Break:
         if (tieBreak) {
             puntosTieBreakPareja2++;
-            //Comprobamos si el lo gana la pareja 2 (7 puntos y con 2 de diferencia):
+            //Comprobamos si el tie lo gana la pareja 2 (7 puntos y con 2 de diferencia):
             if (puntosTieBreakPareja2 >= 7 && puntosTieBreakPareja2 >= puntosTieBreakPareja1 + 2) {
                 ganarSetPareja2TieBreak();
             } 
@@ -290,20 +293,6 @@ public final class PartidoPadel {
         return setsPareja2;
     }
 
-    //Getter para saber si estamos en tie-break:
-    public boolean istieBreak() {
-        return tieBreak;
-    }
-
-    //Getter para los puntos del tie-break:
-    public int getPuntosTieBreakPareja1() {
-        return puntosTieBreakPareja1;
-    }
-
-    public int getPuntosTieBreakPareja2() {
-        return puntosTieBreakPareja2;
-    }
-
     //Verificamos si tenemos historial disponible:
     public boolean historial() {
         return !historial.isEmpty();
@@ -380,7 +369,7 @@ public final class PartidoPadel {
 
     //Guardar puntos en la BBDD:
     private void guardarPuntosBD(int parejaGanadora) {
-        //Guardamos solo en caso que el partido esté empezado:
+        //Guardamos solo en caso de que el partido esté empezado:
         if (!partidoIniciado || idPartidoActual == -1) {
             return;
         }
@@ -417,13 +406,11 @@ public final class PartidoPadel {
                 ganador
             );
 
-            //Obtención de puntos ganados/perdidos del último partido:
-            int puntosGanados = db.getPuntosGanados();
-            int puntosPerdidos = db.getPuntosPerdidos();
+            String[] fechas = db.getFechasPartido(idPartidoActual);
 
             //Subimos a Firestore:
-            FirebaseManager.subirPartido(duracionSegundos, setsPareja1, setsPareja2, ganador,
-                    puntosGanados, puntosPerdidos, locationManager.getLatitud(), locationManager.getLongitud()
+            FirebaseManager.subirPartido(db, idPartidoActual, duracionSegundos, ganador,
+                    locationManager.getLatitud(), locationManager.getLongitud(), fechas[0], fechas[1]
             );
 
         } catch (Exception e) {

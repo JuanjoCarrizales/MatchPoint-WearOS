@@ -51,7 +51,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 juegos_pareja2 INTEGER,
                 sets_pareja1 INTEGER,
                 sets_pareja2 INTEGER,
-                ganador INTEGER,
                 tiebreak INTEGER,
                 FOREIGN KEY (id_partido) REFERENCES partidos(id)
             )
@@ -227,6 +226,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public int getDuracionMedia() {
         return consulta(
                 "SELECT AVG(duracion_total) FROM partidos WHERE partido_finalizado = 1");
+    }
+
+    public String[] getFechasPartido(int idPartido) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT fecha_inicio, fecha_fin FROM partidos WHERE id = ?",
+                new String[]{String.valueOf(idPartido)});
+
+        String[] fechas = new String[2];
+        if (cursor.moveToFirst()) {
+            fechas[0] = cursor.getString(0); // fecha_inicio
+            fechas[1] = cursor.getString(1); // fecha_fin (puede ser null)
+        }
+        cursor.close();
+        return fechas;
     }
 
     //Devolución de las queries:
