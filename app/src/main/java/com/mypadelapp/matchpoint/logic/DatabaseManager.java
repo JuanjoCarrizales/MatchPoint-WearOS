@@ -18,7 +18,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
     //Constructor: Conecta a la BBDD y crea tablas si no existen:
     public DatabaseManager(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
-        getJugadorPrincipal();
     }
 
     //Creación de las tablas si no existen:
@@ -127,45 +126,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.delete("partidos", "id = ?", new String[]{String.valueOf(idPartido)});
     }
 
-    //Creación-verificación del jugador principal(yo):
-    public int getJugadorPrincipal() {
-        SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = db.rawQuery(
-                "SELECT id FROM jugadores WHERE id = 1", null);
-
-        if (cursor.moveToFirst()) {
-            cursor.close();
-            return 1;
-        }
-        cursor.close();
-
-        //Si no existe, creamos el jugador principal:
-        ContentValues values = new ContentValues();
-        values.put("id", 1);
-        values.put("nombre", "Jugador Principal");
-        values.put("creado_desde_app", 1);
-        values.put("fecha_creacion", LocalDateTime.now().toString());
-
-        db.insert("jugadores", null, values);
-        return 1;
-    }
-
     //Obtenemos el total de los partidos jugados:
     public int getTotalPartidos() {
         return consulta(
                 "SELECT COUNT(*) FROM partidos WHERE partido_finalizado = 1");
-    }
-  
-    //Obtenemos Nº de victorias de la pareja 1:
-    public int getVictoriasPareja1() {
-        return consulta(
-                "SELECT COUNT(*) FROM partidos WHERE partido_finalizado = 1 AND ganador = 1");
-    }
-    
-    //Obtenemos Nº de derrotas de la pareja 1:
-    public int getDerrotasPareja1() {
-        return consulta(
-                "SELECT COUNT(*) FROM partidos WHERE partido_finalizado = 1 AND ganador = 2");
     }
 
     //Puntos ganados por la pareja 1:
@@ -179,7 +143,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
             c.close();
             return 0;
         }
-        int idUltimo = c.getInt(0);
         c.close();
         //Contamos los puntos ganados por la pareja 1:
         return consulta(
@@ -199,7 +162,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
             c.close();
             return 0;
         }
-        int idUltimo = c.getInt(0);
         c.close();
         //Contamos los puntos ganados por la pareja 2:
         return consulta(

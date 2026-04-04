@@ -345,9 +345,9 @@ public final class PartidoPadel {
     }
     
     //Deshacer el último punto:
-    public boolean deshacer() {
+    public void deshacer() {
         if (historial.isEmpty()) {
-            return false; //En este caso, no deshará nada
+            return; //En este caso, no deshará nada
         }
         
         EstadoPartido estado = historial.pop();
@@ -363,8 +363,6 @@ public final class PartidoPadel {
         tieBreak = estado.tieBreak;
         puntosTieBreakPareja1 = estado.puntosTieBreakP1;
         puntosTieBreakPareja2 = estado.puntosTieBreakP2;
-        
-        return true;
     }
 
     //Guardar puntos en la BBDD:
