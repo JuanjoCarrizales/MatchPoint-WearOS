@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FirebaseManager {
-    //Usuario predeterminado en la app (yo):
+    //Usuario hardcodeado predeterminado en la app (yo):
     private static final String EMAIL = "juanjo.carrizales98@gmail.com";
     private static final String PASSWORD = "123456";
 
@@ -74,15 +74,15 @@ public class FirebaseManager {
 
         while (cursor.moveToNext()) {
             Map<String, Object> punto = new HashMap<>();
-            punto.put("timestamp",       cursor.getInt(0));
+            punto.put("timestamp", cursor.getInt(0));
             punto.put("pareja_ganadora", cursor.getInt(1));
-            punto.put("puntos_pareja1",  cursor.getInt(2));
-            punto.put("puntos_pareja2",  cursor.getInt(3));
-            punto.put("juegos_pareja1",  cursor.getInt(4));
-            punto.put("juegos_pareja2",  cursor.getInt(5));
-            punto.put("sets_pareja1",    cursor.getInt(6));
-            punto.put("sets_pareja2",    cursor.getInt(7));
-            punto.put("tiebreak",        cursor.getInt(8) == 1);
+            punto.put("puntos_pareja1", cursor.getInt(2));
+            punto.put("puntos_pareja2", cursor.getInt(3));
+            punto.put("juegos_pareja1", cursor.getInt(4));
+            punto.put("juegos_pareja2", cursor.getInt(5));
+            punto.put("sets_pareja1", cursor.getInt(6));
+            punto.put("sets_pareja2", cursor.getInt(7));
+            punto.put("tiebreak", cursor.getInt(8) == 1);
 
             db.collection("usuarios")
                     .document(uid).collection("partidos").document(idPartidoFirestore)

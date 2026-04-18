@@ -91,7 +91,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("id_partido", idPartido);
         values.put("timestamp", timestamp);
-        values.put("pareja_ganadora", parejaGanadora );
+        values.put("pareja_ganadora", parejaGanadora);
         values.put("puntos_pareja1", puntosP1);
         values.put("puntos_pareja2", puntosP2);
         values.put("juegos_pareja1", juegosP1);
@@ -102,7 +102,17 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         db.insert("puntos", null, values);
     }
-    
+
+    //Deshacer puntos:
+    public void deshacerPunto(int idPartido) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(
+                "DELETE FROM puntos WHERE id =" +
+                    "(SELECT MAX(id) FROM puntos WHERE id_partido = ?)",
+                new String[]{String.valueOf(idPartido)}
+        );
+    }
+
     //Fin del partido:
     public void finalizarPartido(int idPartido, int duracionTotal, int setsP1,
             int setsP2, int ganador) {

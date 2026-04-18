@@ -15,10 +15,10 @@ public final class PartidoPadel {
         boolean ventajaP1, ventajaP2;
         boolean tieBreak;
         int puntosTieBreakP1, puntosTieBreakP2;
-        
+
         EstadoPartido (int puntosP1, int puntosP2, int juegosP1, int juegosP2,
-                int setsP1, int setsP2, boolean ventajaP1, boolean ventajaP2,
-                boolean tieBreak, int puntosTieBreakP1, int puntosTieBreakP2) {
+                       int setsP1, int setsP2, boolean ventajaP1, boolean ventajaP2,
+                       boolean tieBreak, int puntosTieBreakP1, int puntosTieBreakP2) {
             this.puntosP1 = puntosP1;
             this.puntosP2 = puntosP2;
             this.juegosP1 = juegosP1;
@@ -32,7 +32,7 @@ public final class PartidoPadel {
             this.puntosTieBreakP2 = puntosTieBreakP2;
         }
     }
-    
+
     //Control del inicio de partido:
     private boolean partidoIniciado = false;
     private boolean cronometroActivo = false;
@@ -45,31 +45,31 @@ public final class PartidoPadel {
 
     //Juegos ganados en el set actual:
     private int juegosPareja1, juegosPareja2;
-    
+
     //Sets ganados en el partido:
     private int setsPareja1, setsPareja2;
-    
+
     //Estado especial (ventajas):
     private boolean ventajaPareja1, ventajaPareja2;
-    
+
     //TieBreak:
     private boolean tieBreak;
     private int puntosTieBreakPareja1, puntosTieBreakPareja2;
-    
+
     //Base de datos:
     private final DatabaseManager db;
     private final LocationManager locationManager;
     private int idPartidoActual = -1;
     private int tiempoInicioPartido;
     private int duracionSegundos = 0;
-    
+
     //Constructor: Se inicia en 0:
     public PartidoPadel(Context context) {
         db = new DatabaseManager(context);
         locationManager = new LocationManager(context);
         reiniciar();
     }
-    
+
     //Reiniciar el partido completo:
     public void reiniciar() {
         //Si hay un partido en curso, se borra de la BBDD:
@@ -80,7 +80,7 @@ public final class PartidoPadel {
         partidoIniciado = false;
         cronometroActivo = false;
         idPartidoActual = -1;
-        
+
         puntosPareja1 = 0;
         puntosPareja2 = 0;
         juegosPareja1 = 0;
@@ -91,11 +91,11 @@ public final class PartidoPadel {
         ventajaPareja2 = false;
         tieBreak = false;
         puntosTieBreakPareja1 = 0;
-        puntosTieBreakPareja2 = 0; 
+        puntosTieBreakPareja2 = 0;
         historial = new Stack<>();
         duracionSegundos = 0;
     }
-    
+
     //Iniciar el partido con el cronómetro:
     public void iniciarPartido() {
         if (!partidoIniciado) {
@@ -131,12 +131,9 @@ public final class PartidoPadel {
     public boolean partidoEmpezado() {
         return partidoIniciado;
     }
-    
+
     //Puntuación pareja 1:
     public void addPuntoPareja1() {
-        //Estado del partido:
-
-        
         //Si estamos en Tie-Break:
         if (tieBreak) {
             puntosTieBreakPareja1++;
@@ -145,10 +142,10 @@ public final class PartidoPadel {
                 ganarSetPareja1TieBreak();
             }
             guardarEstado();
-            guardarPuntosBD(1);
+            guardarPuntosDB(1);
             return;
         }
-        
+
         //Si estamos en iguales (40-40):
         if (puntosPareja1 >= 3 && puntosPareja2 >= 3) {
             if (ventajaPareja2){
@@ -165,26 +162,23 @@ public final class PartidoPadel {
                 ganarJuegoPareja1();
             }
         }
-        guardarEstado();
-        guardarPuntosBD(1);
-    }
-    
-    //Puntuación pareja 2:
-    public void addPuntoPareja2() {
         //Estado del partido:
         guardarEstado();
-        guardarPuntosBD(2);
-        
+        guardarPuntosDB(1);
+    }
+
+    //Puntuación pareja 2:
+    public void addPuntoPareja2() {
         //Si estamos en Tie-Break:
         if (tieBreak) {
             puntosTieBreakPareja2++;
             //Comprobamos si el tie lo gana la pareja 2 (7 puntos y con 2 de diferencia):
             if (puntosTieBreakPareja2 >= 7 && puntosTieBreakPareja2 >= puntosTieBreakPareja1 + 2) {
                 ganarSetPareja2TieBreak();
-            } 
+            }
             return;
         }
-        
+
         //Si estamos en iguales (40-40):
         if (puntosPareja2 >= 3 && puntosPareja1 >= 3) {
             if (ventajaPareja1){
@@ -201,22 +195,25 @@ public final class PartidoPadel {
                 ganarJuegoPareja2();
             }
         }
+        //Estado del partido:
+        guardarEstado();
+        guardarPuntosDB(2);
     }
-    
+
     //Pareja 1 gana un juego:
     private void ganarJuegoPareja1() {
         juegosPareja1++;
         reiniciarPuntos();
         verificarGanadorSet();
     }
-    
+
     //Pareja 2 gana un juego:
     private void ganarJuegoPareja2() {
         juegosPareja2++;
         reiniciarPuntos();
         verificarGanadorSet();
     }
-    
+
     //Reiniciar los puntos del juego actual:
     private void reiniciarPuntos() {
         puntosPareja1 = 0;
@@ -224,7 +221,7 @@ public final class PartidoPadel {
         ventajaPareja1 = false;
         ventajaPareja2 = false;
     }
-    
+
     //Verificamos quien ganó el set:
     private void verificarGanadorSet() {
         //Comprobamos que se ganó con 6 juegos y al menos 2 de diferencia:
@@ -234,27 +231,27 @@ public final class PartidoPadel {
         } else if (juegosPareja2 >= 6 && juegosPareja2 >= juegosPareja1 + 2){
             setsPareja2++;
             reiniciarJuegos();
-        } 
+        }
         //Si se llega a 6-6, se juega tie-break:
         else if (juegosPareja1 == 6 && juegosPareja2 ==6) {
             tieBreak = true;
             reiniciarPuntos();
-        }  
+        }
     }
-    
+
     //Reiniciamos los juegos del set actual:
     private void reiniciarJuegos() {
         juegosPareja1 = 0;
         juegosPareja2 = 0;
     }
-    
+
     //Puntuación en formato texto:
     public String getPuntuacion() {
         //Si estamos en tie-break:
         if (tieBreak){
             return puntosTieBreakPareja1 + " - " + puntosTieBreakPareja2;
         }
-        
+
         //Si estamos en ventajas:
         if (puntosPareja1 >= 3 && puntosPareja2 >= 3){
             if (ventajaPareja1){
@@ -263,11 +260,11 @@ public final class PartidoPadel {
                 return "40 - V";
             }
         }
-        
+
         //Puntuación normal:
         return convertirPuntos(puntosPareja1) + " - " + convertirPuntos(puntosPareja2);
     }
- 
+
     //Convertimos los puntos en formato padel (0, 15, 30, 40):
     public String convertirPuntos(int puntos) {
         return switch (puntos) {
@@ -278,7 +275,7 @@ public final class PartidoPadel {
             default -> "40";
         };
     }
-    
+
     //Añadimos los getters para mostrar en la interfaz:
     public int getJuegosPareja1() {
         return juegosPareja1;
@@ -286,10 +283,10 @@ public final class PartidoPadel {
     public int getJuegosPareja2() {
         return juegosPareja2;
     }
-    public int getsetsPareja1() {
+    public int getSetsPareja1() {
         return setsPareja1;
     }
-    public int getsetsPareja2() {
+    public int getSetsPareja2() {
         return setsPareja2;
     }
 
@@ -316,7 +313,7 @@ public final class PartidoPadel {
         }
         return "";
     }
-    
+
     //Si la pareja1 gana el set en tie-break:
     private void ganarSetPareja1TieBreak() {
         setsPareja1++;
@@ -325,7 +322,7 @@ public final class PartidoPadel {
         puntosTieBreakPareja2 = 0;
         reiniciarJuegos();
     }
-    
+
     //Si la pareja2 gana el set en tie-break:
     private void ganarSetPareja2TieBreak() {
         setsPareja2++;
@@ -338,18 +335,18 @@ public final class PartidoPadel {
     //Guardado del estado actual del partido en el historial:
     private void guardarEstado() {
         EstadoPartido estado = new EstadoPartido(puntosPareja1, puntosPareja2,
-            juegosPareja1, juegosPareja2, setsPareja1, setsPareja2, ventajaPareja1,
-            ventajaPareja2, tieBreak, puntosTieBreakPareja1, puntosTieBreakPareja2
+                juegosPareja1, juegosPareja2, setsPareja1, setsPareja2, ventajaPareja1,
+                ventajaPareja2, tieBreak, puntosTieBreakPareja1, puntosTieBreakPareja2
         );
         historial.push(estado);
     }
-    
+
     //Deshacer el último punto:
     public void deshacer() {
         if (historial.isEmpty()) {
             return; //En este caso, no deshará nada
         }
-        
+
         EstadoPartido estado = historial.pop();
         //Restauramos el estado/punto:
         puntosPareja1 = estado.puntosP1;
@@ -363,26 +360,30 @@ public final class PartidoPadel {
         tieBreak = estado.tieBreak;
         puntosTieBreakPareja1 = estado.puntosTieBreakP1;
         puntosTieBreakPareja2 = estado.puntosTieBreakP2;
+
+        if (partidoIniciado && idPartidoActual != -1) {
+            db.deshacerPunto(idPartidoActual);
+        }
     }
 
     //Guardar puntos en la BBDD:
-    private void guardarPuntosBD(int parejaGanadora) {
+    private void guardarPuntosDB(int parejaGanadora) {
         //Guardamos solo en caso de que el partido esté empezado:
         if (!partidoIniciado || idPartidoActual == -1) {
             return;
         }
         try {
             int timestamp = (int) (System.currentTimeMillis() / 1000) - tiempoInicioPartido;
-            db.guardarPuntos(idPartidoActual, 
-                timestamp, 
-                parejaGanadora, 
-                puntosPareja1, 
-                puntosPareja2, 
-                juegosPareja1, 
-                juegosPareja2, 
-                setsPareja1, 
-                setsPareja2, 
-                tieBreak
+            db.guardarPuntos(idPartidoActual,
+                    timestamp,
+                    parejaGanadora,
+                    puntosPareja1,
+                    puntosPareja2,
+                    juegosPareja1,
+                    juegosPareja2,
+                    setsPareja1,
+                    setsPareja2,
+                    tieBreak
             );
         } catch (Exception e) {
             System.err.println("Error al guardar puntos: " + e.getMessage());
@@ -390,18 +391,18 @@ public final class PartidoPadel {
     }
 
     //Finalizar partido en la BBDD:
-    public void finalizarPartidoBD() {
+    public void finalizarPartidoDB() {
         //Solo acabamos el partido si el partido se ha empezado con el cronómetro:
         if (!partidoIniciado || idPartidoActual == -1) {
             return;
         }
         try {
             int ganador = setsPareja1 >= 2 ? 1 : 2;
-            db.finalizarPartido(idPartidoActual, 
-                duracionSegundos,
-                setsPareja1, 
-                setsPareja2, 
-                ganador
+            db.finalizarPartido(idPartidoActual,
+                    duracionSegundos,
+                    setsPareja1,
+                    setsPareja2,
+                    ganador
             );
 
             String[] fechas = db.getFechasPartido(idPartidoActual);

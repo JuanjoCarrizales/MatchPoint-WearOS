@@ -34,11 +34,11 @@ public class MarcadorFragment extends Fragment {
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_marcador, container, false);
 
-        TextView txtJuegos  = view.findViewById(R.id.txtJuegos);
-        TextView txtSets    = view.findViewById(R.id.txtSets);
-        Button botonP1        = view.findViewById(R.id.botonPuntoP1);
-        Button botonP2        = view.findViewById(R.id.botonPuntoP2);
-        Button botonDeshacer  = view.findViewById(R.id.botonDeshacer);
+        TextView txtJuegos = view.findViewById(R.id.txtJuegos);
+        TextView txtSets = view.findViewById(R.id.txtSets);
+        Button botonP1 = view.findViewById(R.id.botonPuntoP1);
+        Button botonP2 = view.findViewById(R.id.botonPuntoP2);
+        Button botonDeshacer = view.findViewById(R.id.botonDeshacer);
 
         //Actualiza la UI con el estado actual del partido:
         Runnable actualizarUI = () -> {
@@ -46,7 +46,7 @@ public class MarcadorFragment extends Fragment {
             botonP2.setText(partido.getPuntuacion().split(" - ")[1]);
 
             txtJuegos.setText(partido.getJuegosPareja1() + " JUEGOS " + partido.getJuegosPareja2());
-            txtSets.setText(partido.getsetsPareja1() + " SETS " + partido.getsetsPareja2());
+            txtSets.setText(partido.getSetsPareja1() + " SETS " + partido.getSetsPareja2());
 
             if (partido.ganador()){
                 partido.setCronometroActivo(false);
@@ -57,7 +57,7 @@ public class MarcadorFragment extends Fragment {
                         .setMessage(partido.getGanador())
                         .setCancelable(false)//Evita que se toque fuera
                         .setPositiveButton("Nueva partida", (dialog, which) -> {
-                            partido.finalizarPartidoBD();
+                            partido.finalizarPartidoDB();
                             partido.reiniciar();
                             if (actualizarUIRef != null) actualizarUIRef.run();
                         })

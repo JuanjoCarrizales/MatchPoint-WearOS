@@ -38,10 +38,10 @@ public class CronometroFragment extends Fragment {
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cronometro, container, false);
 
-        txtTiempoRef   = view.findViewById(R.id.txtTiempo);
-        txtKcalRef     = view.findViewById(R.id.txtKcal);
-        botonPlayPausaRef  = view.findViewById(R.id.botonPlayPausa);
-        Button botonReiniciar  = view.findViewById(R.id.botonReiniciar);
+        txtTiempoRef = view.findViewById(R.id.txtTiempo);
+        txtKcalRef = view.findViewById(R.id.txtKcal);
+        botonPlayPausaRef = view.findViewById(R.id.botonPlayPausa);
+        Button botonReiniciar = view.findViewById(R.id.botonReiniciar);
 
         handler = new Handler(Looper.getMainLooper());
         runnable = new Runnable() {
@@ -50,12 +50,12 @@ public class CronometroFragment extends Fragment {
                 if (corriendo) {
                     segundos++;
                     partido.setDuracionSegundos(segundos);
-                    // Formato MM:SS:
+                    //Formato MM:SS:
                     int min = segundos / 60;
                     int seg = segundos % 60;
                     txtTiempoRef.setText(String.format("%02d:%02d", min, seg));
 
-                    // Cálculo de kcal (300 kcal/hora = 5 kcal/min):
+                    //Cálculo de kcal (300 kcal/hora = 5 kcal/min):
                     int kcal = (int)(segundos * 300.0 / 3600);
                     txtKcalRef.setText(kcal + " kcal");
 
@@ -66,14 +66,14 @@ public class CronometroFragment extends Fragment {
 
         botonPlayPausaRef.setOnClickListener(v -> {
             if (!corriendo) {
-                // Iniciar:
+                //Iniciar:
                 corriendo = true;
                 botonPlayPausaRef.setText("||");
                 partido.iniciarPartido();
                 partido.setCronometroActivo(true);
                 handler.postDelayed(runnable, 1000);
             } else {
-                // Pausar:
+                //Pausar:
                 corriendo = false;
                 botonPlayPausaRef.setText("▶");
                 partido.setCronometroActivo(false);
@@ -81,7 +81,7 @@ public class CronometroFragment extends Fragment {
         });
 
         botonReiniciar.setOnClickListener(v -> {
-            // Confirmación antes de reiniciar:
+            //Confirmación antes de reiniciar:
             new AlertDialog.Builder(getContext())
                     .setTitle("Reiniciar partido")
                     .setMessage("¿Seguro que quieres reiniciar?")
@@ -91,7 +91,7 @@ public class CronometroFragment extends Fragment {
                         botonPlayPausaRef.setText("▶");
                         txtTiempoRef.setText("00:00");
                         txtKcalRef.setText("0 kcal");
-                        partido.finalizarPartidoBD();
+                        partido.finalizarPartidoDB();
                         partido.reiniciar();
                     })
                     .setNegativeButton("No", null)

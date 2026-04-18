@@ -25,6 +25,9 @@ public class LocationManager {
         longitud = 2.2686;
         System.out.println("Ubicación obtenida: " + latitud + ", " + longitud);
         onExito.run();
+
+
+        //Al usar el emulador, harcodeo la posición para comprobar que funciona. En prueba real, usariamos el suiente código comentado:
         /*if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
