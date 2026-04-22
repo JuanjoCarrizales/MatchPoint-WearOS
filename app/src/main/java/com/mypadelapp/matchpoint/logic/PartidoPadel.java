@@ -134,6 +134,7 @@ public final class PartidoPadel {
 
     //Puntuación pareja 1:
     public void addPuntoPareja1() {
+        guardarEstado();
         //Si estamos en Tie-Break:
         if (tieBreak) {
             puntosTieBreakPareja1++;
@@ -141,7 +142,7 @@ public final class PartidoPadel {
             if (puntosTieBreakPareja1 >= 7 && puntosTieBreakPareja1 >= puntosTieBreakPareja2 + 2) {
                 ganarSetPareja1TieBreak();
             }
-            guardarEstado();
+
             guardarPuntosDB(1);
             return;
         }
@@ -163,12 +164,12 @@ public final class PartidoPadel {
             }
         }
         //Estado del partido:
-        guardarEstado();
         guardarPuntosDB(1);
     }
 
     //Puntuación pareja 2:
     public void addPuntoPareja2() {
+        guardarEstado();
         //Si estamos en Tie-Break:
         if (tieBreak) {
             puntosTieBreakPareja2++;
@@ -176,12 +177,14 @@ public final class PartidoPadel {
             if (puntosTieBreakPareja2 >= 7 && puntosTieBreakPareja2 >= puntosTieBreakPareja1 + 2) {
                 ganarSetPareja2TieBreak();
             }
+
+            guardarPuntosDB(2);
             return;
         }
 
         //Si estamos en iguales (40-40):
         if (puntosPareja2 >= 3 && puntosPareja1 >= 3) {
-            if (ventajaPareja1){
+            if (ventajaPareja1) {
                 ventajaPareja1 = false;
             } else if (ventajaPareja2) {
                 ganarJuegoPareja2();
@@ -196,7 +199,6 @@ public final class PartidoPadel {
             }
         }
         //Estado del partido:
-        guardarEstado();
         guardarPuntosDB(2);
     }
 

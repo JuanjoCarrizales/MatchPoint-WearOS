@@ -20,14 +20,14 @@ public class LocationManager {
 
     //Obtención de la última ubicación conocida:
     public void ultimaUbicacion(Runnable onExito) {
-        //Ubicaciones de prueba:
+        //Ubicaciones de prueba (Pádel Lliça):
         latitud = 41.6182;
         longitud = 2.2686;
         System.out.println("Ubicación obtenida: " + latitud + ", " + longitud);
         onExito.run();
 
 
-        //Al usar el emulador, harcodeo la posición para comprobar que funciona. En prueba real, usariamos el suiente código comentado:
+        //Al usar el emulador, "hardcodeo" la posición para comprobar que funciona. En prueba real, usaríamos el siguiente código:
         /*if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }

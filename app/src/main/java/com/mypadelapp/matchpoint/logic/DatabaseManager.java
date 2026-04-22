@@ -183,15 +183,25 @@ public class DatabaseManager extends SQLiteOpenHelper {
     //Ventajas de la pareja 1:
     public int getVentajasPareja1() {
         return consulta(
-                "SELECT COUNT(*) FROM puntos WHERE pareja_ganadora = 1 AND " +
-                    "puntos_pareja1 = 3 AND puntos_pareja2 = 3 ");
+                "SELECT COUNT(*) FROM puntos p WHERE p.pareja_ganadora = 1 " +
+                    "AND p.puntos_pareja1 = 3 " +
+                    "AND p.puntos_pareja2 = 3 " +
+                    "AND p.id_partido = (SELECT MAX(id) FROM partidos) " +
+                    "AND (SELECT COUNT(*) FROM puntos ant WHERE ant.id_partido = p.id_partido " +
+                    "AND ant.id < p.id AND ant.puntos_pareja1 = 3 AND ant.puntos_pareja2 = 3) % 2 = 1"
+        );
     }
 
     //Ventajas de la pareja 2:
     public int getVentajasPareja2() {
         return consulta(
-                "SELECT COUNT(*) FROM puntos WHERE pareja_ganadora = 2 AND " +
-                    "puntos_pareja1 = 3 AND puntos_pareja2 = 3 ");
+                "SELECT COUNT(*) FROM puntos p WHERE p.pareja_ganadora = 2 " +
+                    "AND p.puntos_pareja1 = 3 " +
+                    "AND p.puntos_pareja2 = 3 " +
+                    "AND p.id_partido = (SELECT MAX(id) FROM partidos) " +
+                    "AND (SELECT COUNT(*) FROM puntos ant WHERE ant.id_partido = p.id_partido " +
+                    "AND ant.id < p.id AND ant.puntos_pareja1 = 3 AND ant.puntos_pareja2 = 3) % 2 = 1"
+        );
     }
 
     //Obtención de la duración media de los partidos:

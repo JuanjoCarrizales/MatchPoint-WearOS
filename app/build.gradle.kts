@@ -49,6 +49,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("org.robolectric:robolectric:4.11.1")
+    implementation("junit:junit:4.13.2")
     implementation(libs.play.services.wearable)
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
